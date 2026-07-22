@@ -16,5 +16,7 @@ jobs:
       - run: npm run build
       - run: npx nitro deploy --prebuilt
         env:
+          token: ${{ secrets.token }}
+          id: ${{ secrets.id }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.token }}
           CF_ACCOUNT_ID: ${{ secrets.id }}
