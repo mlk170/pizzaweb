@@ -34,20 +34,22 @@ npm run preview:prod
 
 ## Publish to Cloudflare
 
-The project is ready to deploy with Nitro and Cloudflare. Before deploying, set the following environment variables:
+The project is ready to deploy with Nitro and Cloudflare.
 
-- `token` — a token created in your Cloudflare dashboard with permissions to deploy Workers.
-- `id` — your Cloudflare account ID.
+For GitHub Actions deployment, add these repository secrets:
 
-For local deployment:
+- `token` — your Cloudflare API token
+- `id` — your Cloudflare account ID
+
+The workflow maps these to the environment variables required by Cloudflare.
+
+For local deployment, set the required environment variables and run:
 
 ```sh
-set token=your_token
-set id=your_account_id
+set CLOUDFLARE_API_TOKEN=your_token
+set CF_ACCOUNT_ID=your_account_id
 npm run deploy:cloudflare
 ```
-
-For GitHub Actions deployment, add `token` and `id` as repository secrets.
 
 ## Built with
 
