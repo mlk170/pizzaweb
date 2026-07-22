@@ -14,9 +14,19 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm run build
-      - run: npx nitro deploy --prebuilt
-        env:
-          token: ${{ secrets.token }}
-          id: ${{ secrets.id }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.token }}
-          CF_ACCOUNT_ID: ${{ secrets.id }}
+      - run: |
+          if [ -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
+            echo "CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}" >> $GITHUB_ENV
+          elif [ -n "${{ secrets.CLOUDFLARE_TOKEN }}" ]; then
+            echo "CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_TOKEN }}" >> $GITHUB_ENV
+          elif [ -n "${{ secrets.token }}" ]; then
+            echo "CLOUDFLARE_API_TOKEN=${{ secrets.token }}" >> $GITHUB_ENV
+          fi
+          if [ -n "${{ secrets.CF_ACCOUNT_ID }}" ]; then
+            echo "CF_ACCOUNT_ID=${{ secrets.CF_ACCOUNT_ID }}" >> $GITHUB_ENV
+          elif [ -n "${{ secrets.ID }}" ]; then
+            echo "CF_ACCOUNT_ID=${{ secrets.ID }}" >> $GITHUB_ENV
+          elif [ -n "${{ secrets.id }}" ]; then
+            echo "CF_ACCOUNT_ID=${{ secrets.id }}" >> $GITHUB_ENV
+          fi
+          npx nitro deploy --prebuilt
