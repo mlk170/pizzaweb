@@ -34,11 +34,20 @@ npm run preview:prod
 
 ## Publish to Cloudflare
 
-The project is ready to deploy with Nitro and Cloudflare. After you configure your Cloudflare account, run:
+The project is ready to deploy with Nitro and Cloudflare. Before deploying, set the following environment variables:
+
+- `CLOUDFLARE_API_TOKEN` — a token created in your Cloudflare dashboard with permissions to deploy Workers.
+- `CF_ACCOUNT_ID` — your Cloudflare account ID.
+
+For local deployment:
 
 ```sh
+set CLOUDFLARE_API_TOKEN=your_token
+set CF_ACCOUNT_ID=your_account_id
 npm run deploy:cloudflare
 ```
+
+For GitHub Actions deployment, add `CLOUDFLARE_API_TOKEN` and `CF_ACCOUNT_ID` as repository secrets.
 
 ## Built with
 
