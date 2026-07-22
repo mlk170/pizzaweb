@@ -15,18 +15,33 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: |
-          if [ -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
-            echo "CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}" >> $GITHUB_ENV
-          elif [ -n "${{ secrets.CLOUDFLARE_TOKEN }}" ]; then
-            echo "CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_TOKEN }}" >> $GITHUB_ENV
-          elif [ -n "${{ secrets.token }}" ]; then
-            echo "CLOUDFLARE_API_TOKEN=${{ secrets.token }}" >> $GITHUB_ENV
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            CLOUDFLARE_API_TOKEN="$CLOUDFLARE_TOKEN"
           fi
-          if [ -n "${{ secrets.CF_ACCOUNT_ID }}" ]; then
-            echo "CF_ACCOUNT_ID=${{ secrets.CF_ACCOUNT_ID }}" >> $GITHUB_ENV
-          elif [ -n "${{ secrets.ID }}" ]; then
-            echo "CF_ACCOUNT_ID=${{ secrets.ID }}" >> $GITHUB_ENV
-          elif [ -n "${{ secrets.id }}" ]; then
-            echo "CF_ACCOUNT_ID=${{ secrets.id }}" >> $GITHUB_ENV
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            CLOUDFLARE_API_TOKEN="$TOKEN"
+          fi
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            CLOUDFLARE_API_TOKEN="$token"
+          fi
+          if [ -z "$CF_ACCOUNT_ID" ]; then
+            CF_ACCOUNT_ID="$ID"
+          fi
+          if [ -z "$CF_ACCOUNT_ID" ]; then
+            CF_ACCOUNT_ID="$id"
+          fi
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CF_ACCOUNT_ID" ]; then
+            echo "Missing required Cloudflare secrets"
+            echo "CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN"
+            echo "CF_ACCOUNT_ID=$CF_ACCOUNT_ID"
+            exit 1
           fi
           npx nitro deploy --prebuilt
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+          TOKEN: ${{ secrets.TOKEN }}
+          token: ${{ secrets.token }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          ID: ${{ secrets.ID }}
+          id: ${{ secrets.id }}
